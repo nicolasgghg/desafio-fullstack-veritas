@@ -1,7 +1,8 @@
-package backend
+package main
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -49,23 +50,15 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&task)
 
-	// Validations
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if task.Title == "" {
-		http.Error(w, "Title is required", http.StatusBadRequest)
-		return
-	}
-	if task.Status == "" {
-		http.Error(w, "Status is required", http.StatusBadRequest)
-		return
-	}
-	if task.Status != "todo" &&
-		task.Status != "in_progress" &&
-		task.Status != "done" {
-		http.Error(w, "Invalid status", http.StatusBadRequest)
+
+	err = validateTask(task)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -104,20 +97,10 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if task.Title == "" {
-		http.Error(w, "Title is required", http.StatusBadRequest)
-		return
-	}
+	err = validateTask(task)
 
-	if task.Status == "" {
-		http.Error(w, "Status is required", http.StatusBadRequest)
-		return
-	}
-
-	if task.Status != "todo" &&
-		task.Status != "in_progress" &&
-		task.Status != "done" {
-		http.Error(w, "Invalid status", http.StatusBadRequest)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -174,4 +157,23 @@ func enableCORS(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+}
+
+// Validate task data
+func validateTask(task Task) error {
+	if task.Title == "" {
+		return errors.New("Title is required")
+	}
+
+	if task.Status == "" {
+		return errors.New("Status is required")
+	}
+
+	if task.Status != "todo" &&
+		task.Status != "in_progress" &&
+		task.Status != "done" {
+		return errors.New("Invalid status")
+	}
+
+	return nil
 }
