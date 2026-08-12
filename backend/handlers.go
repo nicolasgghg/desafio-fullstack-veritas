@@ -22,6 +22,27 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tasks)
 }
 
+// List task by ID
+func getTask(w http.ResponseWriter, r *http.Request) {
+
+	id, err := getTaskID(r)
+
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	task, exists := tasks[id]
+
+	if !exists {
+		http.Error(w, "Task not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(task)
+}
+
 // Create a new task
 func createTask(w http.ResponseWriter, r *http.Request) {
 	var task Task

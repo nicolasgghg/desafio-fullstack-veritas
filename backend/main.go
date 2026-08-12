@@ -32,6 +32,9 @@ func main() {
 		case http.MethodDelete:
 			deleteTask(w, r)
 
+		case http.MethodGet:
+			getTask(w, r)
+
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
