@@ -108,6 +108,29 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(task)
 }
 
+// Delete task by ID
+func deleteTask(w http.ResponseWriter, r *http.Request) {
+	id, err := getTaskID(r)
+
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	if _, exists := tasks[id]; !exists {
+		http.Error(w, "Task not found", http.StatusNotFound)
+		return
+	}
+
+	delete(tasks, id)
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+//----
+// Helper functions
+//----
+
 // Extract task ID from URL
 func getTaskID(r *http.Request) (int, error) {
 	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
