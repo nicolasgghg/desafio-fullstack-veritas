@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import TaskForm from "./components/TaskForm";
 import TaskItem from "./components/TaskItem";
-import { getTasks } from "./services/taskService";
+import { deleteTask, getTasks } from "./services/taskService";
 import type { Task } from "./types/Task";
 
 function App() {
@@ -24,6 +24,16 @@ function App() {
     setTasks((currentTasks) => [...currentTasks, task]);
   }
 
+  async function handleTaskDeleted(id: number) {
+    try {
+      await deleteTask(id);
+
+      setTasks((currentTasks) => currentTasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="mx-auto max-w-4xl px-6 py-10">
@@ -35,7 +45,7 @@ function App() {
 
         <div className="mt-8 space-y-3">
           {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem key={task.id} task={task} onDelete={handleTaskDeleted} />
           ))}
         </div>
       </div>
