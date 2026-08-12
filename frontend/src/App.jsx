@@ -1,4 +1,5 @@
-import TaskItem from "./components/TaskItem";
+import TaskForm from "./components/TaskForm"
+import TaskItem from "./components/TaskItem"
 
 function App() {
   const tasks = [
@@ -17,23 +18,32 @@ function App() {
       title: "Finish the project",
       status: "done",
     },
-  ];
+  ]
 
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="text-3xl font-bold text-gray-900">Task Manager</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Task Manager
+        </h1>
 
-        <p className="mt-2 text-gray-600">Manage your tasks</p>
+        <p className="mt-2 text-gray-600">
+          Manage your tasks
+        </p>
+
+        <TaskForm />
 
         <div className="mt-8 space-y-3">
           {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+            />
           ))}
         </div>
       </div>
     </main>
-  );
+  )
 }
 
-export default App;
+export default App
