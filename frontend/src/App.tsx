@@ -6,6 +6,7 @@ import type { Task } from "./types/Task";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
 
   useEffect(() => {
     async function loadTasks() {
@@ -34,6 +35,20 @@ function App() {
     }
   }
 
+  function handleEditTask(task: Task) {
+    setTaskToEdit(task);
+  }
+
+  function handleTaskUpdated(task: Task) {
+    setTasks((currentTasks) =>
+      currentTasks.map((currentTask) =>
+        currentTask.id === task.id ? task : currentTask,
+      ),
+    );
+
+    setTaskToEdit(undefined);
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="mx-auto max-w-4xl px-6 py-10">
@@ -41,11 +56,20 @@ function App() {
 
         <p className="mt-2 text-gray-600">Manage your tasks</p>
 
-        <TaskForm onTaskCreated={handleTaskCreated} />
+        <TaskForm
+          onTaskCreated={handleTaskCreated}
+          taskToEdit={taskToEdit}
+          onTaskUpdated={handleTaskUpdated}
+        />
 
         <div className="mt-8 space-y-3">
           {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} onDelete={handleTaskDeleted} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              onDelete={handleTaskDeleted}
+              onEdit={handleEditTask}
+            />
           ))}
         </div>
       </div>

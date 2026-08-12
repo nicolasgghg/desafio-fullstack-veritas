@@ -3,8 +3,10 @@ import type { Task } from "../types/Task";
 interface TaskItemProps {
   task: Task;
   onDelete: (id: number) => void;
+  onEdit: (task: Task) => void;
 }
-function TaskItem({ task, onDelete }: TaskItemProps) {
+
+function TaskItem({ task, onDelete, onEdit }: TaskItemProps) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <div>
@@ -16,13 +18,23 @@ function TaskItem({ task, onDelete }: TaskItemProps) {
           {task.status}
         </span>
       </div>
-      <button
-        type="button"
-        onClick={() => onDelete(task.id)}
-        className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
-      >
-        Delete
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => onEdit(task)}
+          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onDelete(task.id)}
+          className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 }
