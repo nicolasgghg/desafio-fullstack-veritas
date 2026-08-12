@@ -20,6 +20,10 @@ function App() {
     loadTasks();
   }, []);
 
+  function handleTaskCreated(task: Task) {
+    setTasks((currentTasks) => [...currentTasks, task]);
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="mx-auto max-w-4xl px-6 py-10">
@@ -27,7 +31,7 @@ function App() {
 
         <p className="mt-2 text-gray-600">Manage your tasks</p>
 
-        <TaskForm />
+        <TaskForm onTaskCreated={handleTaskCreated} />
 
         <div className="mt-8 space-y-3">
           {tasks.map((task) => (

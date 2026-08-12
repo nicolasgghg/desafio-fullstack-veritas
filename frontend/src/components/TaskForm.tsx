@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { createTask } from "../services/taskService";
+import type { Task } from "../types/Task";
 
-function TaskForm() {
+interface TaskFormProps {
+  onTaskCreated: (task: Task) => void;
+}
+
+function TaskForm({ onTaskCreated }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<"todo" | "in_progress" | "done">("todo");
@@ -11,11 +16,13 @@ function TaskForm() {
         event.preventDefault();
 
         try {
-          await createTask({
+          const newTask = await createTask({
             title,
             description,
             status,
           });
+          
+          onTaskCreated(newTask)
 
           setTitle("");
           setDescription("");
