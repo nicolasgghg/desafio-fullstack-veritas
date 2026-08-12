@@ -1,9 +1,7 @@
 function TaskForm() {
   return (
     <form className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 className="text-xl font-semibold text-gray-900">
-        Create a new task
-      </h2>
+      <h2 className="text-xl font-semibold text-gray-900">Create a new task</h2>
 
       <div className="mt-4">
         <label
@@ -17,6 +15,22 @@ function TaskForm() {
           id="title"
           type="text"
           placeholder="Enter task title"
+          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+        />
+      </div>
+
+      <div className="mt-4">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          placeholder="Enter task description"
+          rows={4}
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </div>
@@ -46,7 +60,7 @@ function TaskForm() {
         Create Task
       </button>
     </form>
-  )
+  );
 }
 
-export default TaskForm
+export default TaskForm;
