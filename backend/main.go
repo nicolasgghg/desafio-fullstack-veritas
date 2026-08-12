@@ -6,13 +6,16 @@ import (
 
 func main() {
 
-	//tasks route handlers
+	// Tasks routes
 	http.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {
 
 		switch r.Method {
 
 		case http.MethodGet:
 			getTasks(w, r)
+
+		case http.MethodPost:
+			createTask(w, r)
 
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
