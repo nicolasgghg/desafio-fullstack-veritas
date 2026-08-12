@@ -25,18 +25,17 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 
 // List task by ID
 func getTask(w http.ResponseWriter, r *http.Request) {
-
-	id, err := getTaskID(r)
+	id, err := getIDFromURL(r)
 
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
 
-	task, exists := tasks[id]
+	task, err := findTaskByID(id)
 
-	if !exists {
-		http.Error(w, "Task not found", http.StatusNotFound)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -76,15 +75,17 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 
 // Update task by ID
 func updateTask(w http.ResponseWriter, r *http.Request) {
-	id, err := getTaskID(r)
+	id, err := getIDFromURL(r)
 
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
 
-	if _, exists := tasks[id]; !exists {
-		http.Error(w, "Task not found", http.StatusNotFound)
+	_, err = findTaskByID(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -114,15 +115,17 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 
 // Delete task by ID
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-	id, err := getTaskID(r)
+	id, err := getIDFromURL(r)
 
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
 
-	if _, exists := tasks[id]; !exists {
-		http.Error(w, "Task not found", http.StatusNotFound)
+	_, err = findTaskByID(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -135,8 +138,38 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 // Helper functions
 //----
 
-// Extract task ID from URL
-func getTaskID(r *http.Request) (int, error) {
+// Validate task data
+func validateTask(task Task) error {
+	if task.Title == "" {
+		return errors.New("Title is required")
+	}
+
+	if task.Status == "" {
+		return errors.New("Status is required")
+	}
+
+	if task.Status != "todo" &&
+		task.Status != "in_progress" &&
+		task.Status != "done" {
+		return errors.New("Invalid status")
+	}
+
+	return nil
+}
+
+// Find task by ID
+func findTaskByID(id int) (Task, error) {
+	task, exists := tasks[id]
+
+	if !exists {
+		return Task{}, errors.New("Task not found")
+	}
+
+	return task, nil
+}
+
+// Extract ID from URL
+func getIDFromURL(r *http.Request) (int, error) {
 	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 
 	if len(parts) < 2 {
@@ -157,23 +190,4 @@ func enableCORS(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
-
-// Validate task data
-func validateTask(task Task) error {
-	if task.Title == "" {
-		return errors.New("Title is required")
-	}
-
-	if task.Status == "" {
-		return errors.New("Status is required")
-	}
-
-	if task.Status != "todo" &&
-		task.Status != "in_progress" &&
-		task.Status != "done" {
-		return errors.New("Invalid status")
-	}
-
-	return nil
 }
