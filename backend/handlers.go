@@ -3,6 +3,8 @@ package backend
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 // In-memory task storage
@@ -28,21 +30,21 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 
 	// Validations
 	if err != nil {
-		http.Error(w, "JSON inválido", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	if task.Title == "" {
-		http.Error(w, "O título é obrigatório", http.StatusBadRequest)
+		http.Error(w, "Title is required", http.StatusBadRequest)
 		return
 	}
 	if task.Status == "" {
-		http.Error(w, "O status é obrigatório", http.StatusBadRequest)
+		http.Error(w, "Status is required", http.StatusBadRequest)
 		return
 	}
 	if task.Status != "todo" &&
 		task.Status != "in_progress" &&
 		task.Status != "done" {
-		http.Error(w, "Status inválido", http.StatusBadRequest)
+		http.Error(w, "Invalid status", http.StatusBadRequest)
 		return
 	}
 
@@ -56,4 +58,69 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	json.NewEncoder(w).Encode(task)
+}
+
+// Update task by ID
+func updateTask(w http.ResponseWriter, r *http.Request) {
+	id, err := getTaskID(r)
+
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	if _, exists := tasks[id]; !exists {
+		http.Error(w, "Task not found", http.StatusNotFound)
+		return
+	}
+
+	var task Task
+
+	err = json.NewDecoder(r.Body).Decode(&task)
+
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	if task.Title == "" {
+		http.Error(w, "Title is required", http.StatusBadRequest)
+		return
+	}
+
+	if task.Status == "" {
+		http.Error(w, "Status is required", http.StatusBadRequest)
+		return
+	}
+
+	if task.Status != "todo" &&
+		task.Status != "in_progress" &&
+		task.Status != "done" {
+		http.Error(w, "Invalid status", http.StatusBadRequest)
+		return
+	}
+
+	task.ID = id
+	tasks[id] = task
+
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(task)
+}
+
+// Extract task ID from URL
+func getTaskID(r *http.Request) (int, error) {
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+
+	if len(parts) < 2 {
+		return 0, strconv.ErrSyntax
+	}
+
+	id, err := strconv.Atoi(parts[1])
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }

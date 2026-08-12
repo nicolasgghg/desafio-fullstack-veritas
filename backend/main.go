@@ -22,6 +22,18 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/tasks/", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodPut:
+			updateTask(w, r)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
 	// Start server on port 8080
 	http.ListenAndServe(":8080", nil)
 }
