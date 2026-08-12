@@ -20,7 +20,13 @@ var nextID = 1
 func getTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(tasks)
+	taskList := []Task{}
+
+	for _, task := range tasks {
+		taskList = append(taskList, task)
+	}
+
+	json.NewEncoder(w).Encode(taskList)
 }
 
 // List task by ID
