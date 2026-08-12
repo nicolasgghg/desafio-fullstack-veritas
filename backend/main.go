@@ -9,6 +9,8 @@ func main() {
 	// Tasks routes
 	http.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {
 
+		enableCORS(w)
+
 		switch r.Method {
 
 		case http.MethodGet:
@@ -17,12 +19,17 @@ func main() {
 		case http.MethodPost:
 			createTask(w, r)
 
+		case http.MethodOptions:
+			w.WriteHeader(http.StatusNoContent)
+
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
 
 	http.HandleFunc("/tasks/", func(w http.ResponseWriter, r *http.Request) {
+
+		enableCORS(w)
 
 		switch r.Method {
 
@@ -34,6 +41,9 @@ func main() {
 
 		case http.MethodGet:
 			getTask(w, r)
+
+		case http.MethodOptions:
+			w.WriteHeader(http.StatusNoContent)
 
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
