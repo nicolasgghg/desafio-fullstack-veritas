@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import TaskForm from "./components/TaskForm";
-import TaskItem from "./components/TaskItem";
 import { deleteTask, getTasks, updateTask } from "./services/taskService";
 import type { Task } from "./types/Task";
 import Modal from "./components/Modal";
+import KanbanColumn from "./components/KanbanColumn";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
-
-  const todoTasks = tasks.filter((task) => task.status === "todo");
-  const inProgressTasks = tasks.filter((task) => task.status === "in_progress");
-  const doneTasks = tasks.filter((task) => task.status === "done");
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+
+  // Derived lists: split tasks by status so each Kanban column
+  // only receives the tasks it should render.
+  const todoTasks = tasks.filter((task) => task.status === "todo");
+  const inProgressTasks = tasks.filter((task) => task.status === "in_progress");
+  const doneTasks = tasks.filter((task) => task.status === "done");
+
+  //----
+  // Initial data fetch
+  //----
 
   useEffect(() => {
     async function loadTasks() {
@@ -34,6 +39,11 @@ function App() {
     loadTasks();
   }, []);
 
+  //----
+  // Task handlers
+  //----
+
+  // Add the newly created task to local state (backend already assigned the id)
   function handleTaskCreated(task: Task) {
     setTasks((currentTasks) => [...currentTasks, task]);
   }
@@ -48,6 +58,9 @@ function App() {
     }
   }
 
+  // Quick status change from the task card (used to move tasks between columns).
+  // The backend PUT replaces the whole task, so we send the full object
+  // with only the status field changed.
   async function handleStatusChange(id: number, status: Task["status"]) {
     const task = tasks.find((t) => t.id === id);
     if (!task) return;
@@ -60,6 +73,7 @@ function App() {
     }
   }
 
+  // Opens the modal in edit mode, pre-filling the form with the selected task
   function handleEditTask(task: Task) {
     setTaskToEdit(task);
     setIsModalOpen(true);
@@ -74,6 +88,10 @@ function App() {
 
     setTaskToEdit(undefined);
   }
+
+  //----
+  // Render
+  //----
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -117,55 +135,30 @@ function App() {
         )}
 
         {loadError && <p className="mt-4 text-sm text-red-600">{loadError}</p>}
-        
+
+        {/* Kanban board: one column per task status */}
         <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <section>
-            <h2 className="mb-3 text-lg font-semibold text-gray-900">To Do</h2>
-
-            <div className="space-y-3">
-              {todoTasks.map((task) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onDelete={handleTaskDeleted}
-                  onEdit={handleEditTask}
-                  onStatusChange={handleStatusChange}
-                />
-              ))}
-            </div>
-          </section>
-          <section>
-            <h2 className="mb-3 text-lg font-semibold text-gray-900">
-              In Progress
-            </h2>
-
-            <div className="space-y-3">
-              {inProgressTasks.map((task) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onDelete={handleTaskDeleted}
-                  onEdit={handleEditTask}
-                  onStatusChange={handleStatusChange}
-                />
-              ))}
-            </div>
-          </section>
-          <section>
-            <h2 className="mb-3 text-lg font-semibold text-gray-900">Done</h2>
-
-            <div className="space-y-3">
-              {doneTasks.map((task) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onDelete={handleTaskDeleted}
-                  onEdit={handleEditTask}
-                  onStatusChange={handleStatusChange}
-                />
-              ))}
-            </div>
-          </section>
+          <KanbanColumn
+            title="To Do"
+            tasks={todoTasks}
+            onDelete={handleTaskDeleted}
+            onEdit={handleEditTask}
+            onStatusChange={handleStatusChange}
+          />
+          <KanbanColumn
+            title="In Progress"
+            tasks={inProgressTasks}
+            onDelete={handleTaskDeleted}
+            onEdit={handleEditTask}
+            onStatusChange={handleStatusChange}
+          />
+          <KanbanColumn
+            title="Done"
+            tasks={doneTasks}
+            onDelete={handleTaskDeleted}
+            onEdit={handleEditTask}
+            onStatusChange={handleStatusChange}
+          />
         </div>
       </div>
     </main>
