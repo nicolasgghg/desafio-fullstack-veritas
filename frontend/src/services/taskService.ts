@@ -29,7 +29,7 @@ export async function getTasks(): Promise<Task[]> {
   if (!response.ok) {
     const message = await extractErrorMessage(
       response,
-      "Failed to fetch tasks",
+      "Falha ao buscar tarefas",
     );
     throw new Error(message);
   }
@@ -49,7 +49,7 @@ export async function createTask(task: Omit<Task, "id">): Promise<Task> {
   if (!response.ok) {
     const message = await extractErrorMessage(
       response,
-      "Failed to create task",
+      "Falha ao criar tarefa",
     );
     throw new Error(message);
   }
@@ -65,7 +65,7 @@ export async function deleteTask(id: number): Promise<void> {
   if (!response.ok) {
     const message = await extractErrorMessage(
       response,
-      "Failed to delete task",
+      "Falha ao excluir tarefa",
     );
     throw new Error(message);
   }
@@ -86,7 +86,7 @@ export async function updateTask(
   if (!response.ok) {
     const message = await extractErrorMessage(
       response,
-      "Failed to update task",
+      "Falha ao atualizar tarefa",
     );
     throw new Error(message);
   }

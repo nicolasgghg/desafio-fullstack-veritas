@@ -28,7 +28,7 @@ function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
           onClick={() => onEdit(task)}
           className="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
-          Edit
+          Editar
         </button>
 
         <button
@@ -36,7 +36,7 @@ function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
           onClick={() => onDelete(task.id)}
           className="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700"
         >
-          Delete
+          Excluir
         </button>
 
         {/* Quick status change without opening the modal — lets the user
@@ -48,9 +48,9 @@ function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
           }
           className="rounded-md border border-gray-300 px-2 py-1 text-sm"
         >
-          <option value="todo">To Do</option>
-          <option value="in_progress">In Progress</option>
-          <option value="done">Done</option>
+          <option value="todo">A Fazer</option>
+          <option value="in_progress">Em Progresso</option>
+          <option value="done">Concluída</option>
         </select>
       </div>
     </div>

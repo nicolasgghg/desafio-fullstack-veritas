@@ -31,7 +31,7 @@ function App() {
         setTasks(data);
       } catch (error) {
         console.error(error);
-        setLoadError("Is not possible loading tasks.");
+        setLoadError("Não foi possível carregar as tarefas.");
       } finally {
         setIsLoading(false);
       }
@@ -96,9 +96,9 @@ function App() {
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900">Task Manager</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Gerenciador de Tarefas</h1>
 
-        <p className="mt-2 text-gray-600">Manage your tasks</p>
+        <p className="mt-2 text-gray-600">Gerencie suas tarefas</p>
         <button
           onClick={() => setIsModalOpen(true)}
           className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
@@ -139,21 +139,21 @@ function App() {
         {/* Kanban board: one column per task status, side by side on larger screens */}
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
           <KanbanColumn
-            title="To Do"
+            title="A Fazer"
             tasks={todoTasks}
             onDelete={handleTaskDeleted}
             onEdit={handleEditTask}
             onStatusChange={handleStatusChange}
           />
           <KanbanColumn
-            title="In Progress"
+            title="Em Progresso"
             tasks={inProgressTasks}
             onDelete={handleTaskDeleted}
             onEdit={handleEditTask}
             onStatusChange={handleStatusChange}
           />
           <KanbanColumn
-            title="Done"
+            title="Concluídas"
             tasks={doneTasks}
             onDelete={handleTaskDeleted}
             onEdit={handleEditTask}

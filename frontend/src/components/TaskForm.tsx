@@ -50,7 +50,7 @@ function TaskForm({
     setError("");
 
     if (!title.trim()) {
-      setError("Title is required");
+      setError("O título é obrigatório");
       return;
     }
 
@@ -82,7 +82,7 @@ function TaskForm({
       setError(
         error instanceof Error
           ? error.message
-          : "Something went wrong. Please try again.",
+          : "Algo deu errado. Tente novamente.",
       );
     } finally {
       setLoading(false);
@@ -95,7 +95,7 @@ function TaskForm({
       className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
     >
       <h2 className="text-xl font-semibold text-gray-900">
-        {taskToEdit ? "Edit task" : "Create a new task"}
+        {taskToEdit ? "Editar tarefa" : "Criar nova tarefa"}
       </h2>
 
       <div className="mt-4">
@@ -103,7 +103,7 @@ function TaskForm({
           htmlFor="title"
           className="block text-sm font-medium text-gray-700"
         >
-          Title
+          Título
         </label>
 
         <input
@@ -111,7 +111,7 @@ function TaskForm({
           type="text"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="Enter task title"
+          placeholder="Digite o título da tarefa"
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </div>
@@ -121,14 +121,14 @@ function TaskForm({
           htmlFor="description"
           className="block text-sm font-medium text-gray-700"
         >
-          Description
+          Descrição
         </label>
 
         <textarea
           id="description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          placeholder="Enter task description"
+          placeholder="Digite a descrição da tarefa"
           rows={4}
           className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
@@ -150,9 +150,9 @@ function TaskForm({
           }
           className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         >
-          <option value="todo">To Do</option>
-          <option value="in_progress">In Progress</option>
-          <option value="done">Done</option>
+          <option value="todo">A Fazer</option>
+          <option value="in_progress">Em Progresso</option>
+          <option value="done">Concluída</option>
         </select>
       </div>
 
@@ -164,7 +164,11 @@ function TaskForm({
           disabled={loading}
           className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
         >
-          {loading ? "Saving..." : taskToEdit ? "Update Task" : "Create Task"}
+          {loading
+            ? "Salvando..."
+            : taskToEdit
+              ? "Atualizar Tarefa"
+              : "Criar Tarefa"}
         </button>
 
         <button
@@ -172,7 +176,7 @@ function TaskForm({
           onClick={onCancel}
           className="rounded-md border border-gray-300 px-4 py-2 font-medium text-gray-700 hover:bg-gray-50"
         >
-          Cancel
+          Cancelar
         </button>
       </div>
     </form>
