@@ -6,12 +6,21 @@ interface TaskFormProps {
   onTaskCreated: (task: Task) => void;
   taskToEdit?: Task;
   onTaskUpdated: (task: Task) => void;
+  onCancel: () => void;
 }
 
-function TaskForm({ onTaskCreated, taskToEdit, onTaskUpdated }: TaskFormProps) {
+function TaskForm({
+  onTaskCreated,
+  taskToEdit,
+  onTaskUpdated,
+  onCancel,
+}: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<"todo" | "in_progress" | "done">("todo");
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (taskToEdit) {
@@ -25,8 +34,15 @@ function TaskForm({ onTaskCreated, taskToEdit, onTaskUpdated }: TaskFormProps) {
     <form
       onSubmit={async (event) => {
         event.preventDefault();
+        setError("");
+
+        if (!title.trim()) {
+          setError("Title is required");
+          return;
+        }
 
         try {
+          setLoading(true);
           if (taskToEdit) {
             const updatedTask = await updateTask(taskToEdit.id, {
               title,
@@ -54,6 +70,9 @@ function TaskForm({ onTaskCreated, taskToEdit, onTaskUpdated }: TaskFormProps) {
           setStatus("todo");
         } catch (error) {
           console.error(error);
+          setError("Something went wrong. Please try again.");
+        } finally {
+          setLoading(false);
         }
       }}
       className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
@@ -120,12 +139,25 @@ function TaskForm({ onTaskCreated, taskToEdit, onTaskUpdated }: TaskFormProps) {
         </select>
       </div>
 
-      <button
-        type="submit"
-        className="mt-6 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
-      >
-        {taskToEdit ? "Update Task" : "Create Task"}
-      </button>
+      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+
+      <div className="mt-6 flex gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+        >
+          {loading ? "Saving..." : taskToEdit ? "Update Task" : "Create Task"}
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-md border border-gray-300 px-4 py-2 font-medium text-gray-700 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
