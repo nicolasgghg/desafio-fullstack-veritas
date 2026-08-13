@@ -34,7 +34,7 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromURL(r)
 
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
 
@@ -56,7 +56,7 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&task)
 
 	if err != nil {
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		http.Error(w, "JSON inválido", http.StatusBadRequest)
 		return
 	}
 
@@ -84,7 +84,7 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromURL(r)
 
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
 
@@ -100,7 +100,7 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&task)
 
 	if err != nil {
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		http.Error(w, "JSON inválido", http.StatusBadRequest)
 		return
 	}
 
@@ -124,7 +124,7 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromURL(r)
 
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
 
@@ -147,17 +147,17 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 // Validate task data
 func validateTask(task Task) error {
 	if task.Title == "" {
-		return errors.New("Title is required")
+		return errors.New("título é obrigatório")
 	}
 
 	if task.Status == "" {
-		return errors.New("Status is required")
+		return errors.New("status é obrigatório")
 	}
 
 	if task.Status != "todo" &&
 		task.Status != "in_progress" &&
 		task.Status != "done" {
-		return errors.New("Invalid status")
+		return errors.New("status inválido")
 	}
 
 	return nil
@@ -168,7 +168,7 @@ func findTaskByID(id int) (Task, error) {
 	task, exists := tasks[id]
 
 	if !exists {
-		return Task{}, errors.New("Task not found")
+		return Task{}, errors.New("tarefa não encontrada")
 	}
 
 	return task, nil

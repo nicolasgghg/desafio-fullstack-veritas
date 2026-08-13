@@ -26,7 +26,7 @@ func main() {
 			w.WriteHeader(http.StatusNoContent)
 
 		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			http.Error(w, "Método não permitido.", http.StatusMethodNotAllowed)
 		}
 	})
 
@@ -49,15 +49,15 @@ func main() {
 			w.WriteHeader(http.StatusNoContent)
 
 		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		}
 	})
 
 	// Start server on port 8080
-	log.Printf("Server started on port %s", port)
+	log.Printf("Server iniciado na porta: %s", port)
 
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+		log.Fatalf("Server falhou em iniciar: %v", err)
 	}
 }
