@@ -36,6 +36,9 @@ function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
         >
           Delete
         </button>
+
+        {/* Quick status change without opening the modal — lets the user
+            move a task between columns directly from the card. */}
         <select
           value={task.status}
           onChange={(event) =>
