@@ -9,18 +9,20 @@ interface TaskItemProps {
 
 function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-      <div className="min-w-0 flex-1">
+    <div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="min-w-0">
         <h2 className="break-words font-semibold text-gray-900">
           {task.title}
         </h2>
 
-        <p className="mt-1 break-words text-sm text-gray-600">
+        {/* Limita a altura da descrição e ativa scroll interno,
+            evitando que descrições longas estiquem o card indefinidamente. */}
+        <p className="mt-1 max-h-24 overflow-y-auto break-words whitespace-pre-wrap text-sm text-gray-600">
           {task.description}
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 sm:ml-4 sm:shrink-0">
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => onEdit(task)}
