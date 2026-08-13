@@ -136,8 +136,8 @@ function App() {
 
         {loadError && <p className="mt-4 text-sm text-red-600">{loadError}</p>}
 
-        {/* Kanban board: one column per task status */}
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        {/* Kanban board: one column per task status, side by side on larger screens */}
+        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
           <KanbanColumn
             title="To Do"
             tasks={todoTasks}

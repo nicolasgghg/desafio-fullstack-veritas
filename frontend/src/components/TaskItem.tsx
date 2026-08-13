@@ -9,7 +9,7 @@ interface TaskItemProps {
 
 function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
   return (
-    <div className="flex min-w-0 items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0 flex-1">
         <h2 className="break-words font-semibold text-gray-900">
           {task.title}
@@ -20,7 +20,7 @@ function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
         </p>
       </div>
 
-      <div className="ml-4 flex shrink-0 gap-2">
+      <div className="flex flex-wrap gap-2 sm:ml-4 sm:shrink-0">
         <button
           type="button"
           onClick={() => onEdit(task)}
