@@ -22,6 +22,7 @@ function TaskForm({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Pre-fills the form when editing an existing task
   useEffect(() => {
     if (taskToEdit) {
       setTitle(taskToEdit.title);
@@ -30,51 +31,67 @@ function TaskForm({
     }
   }, [taskToEdit]);
 
+  //----
+  // Helpers
+  //----
+
+  function resetForm() {
+    setTitle("");
+    setDescription("");
+    setStatus("todo");
+  }
+
+  //----
+  // Submit handler
+  //----
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    setError("");
+
+    if (!title.trim()) {
+      setError("Title is required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      if (taskToEdit) {
+        const updatedTask = await updateTask(taskToEdit.id, {
+          title,
+          description,
+          status,
+        });
+
+        onTaskUpdated(updatedTask);
+      } else {
+        const newTask = await createTask({
+          title,
+          description,
+          status,
+        });
+
+        onTaskCreated(newTask);
+      }
+
+      resetForm();
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <form
-      onSubmit={async (event) => {
-        event.preventDefault();
-        setError("");
-
-        if (!title.trim()) {
-          setError("Title is required");
-          return;
-        }
-
-        try {
-          setLoading(true);
-          if (taskToEdit) {
-            const updatedTask = await updateTask(taskToEdit.id, {
-              title,
-              description,
-              status,
-            });
-
-            onTaskUpdated(updatedTask);
-
-            setTitle("");
-            setDescription("");
-            setStatus("todo");
-          } else {
-            const newTask = await createTask({
-              title,
-              description,
-              status,
-            });
-
-            onTaskCreated(newTask);
-          }
-
-          setTitle("");
-          setDescription("");
-          setStatus("todo");
-        } catch (error) {
-          console.error(error);
-          setError("Something went wrong. Please try again.");
-        } finally {
-          setLoading(false);
-        }
-      }}
+      onSubmit={handleSubmit}
       className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
     >
       <h2 className="text-xl font-semibold text-gray-900">
