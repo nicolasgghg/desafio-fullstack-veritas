@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
 	"net/http"
 )
+
+const port = ":8080"
 
 func main() {
 
@@ -23,7 +26,7 @@ func main() {
 			w.WriteHeader(http.StatusNoContent)
 
 		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			http.Error(w, "Método não permitido.", http.StatusMethodNotAllowed)
 		}
 	})
 
@@ -46,10 +49,15 @@ func main() {
 			w.WriteHeader(http.StatusNoContent)
 
 		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		}
 	})
 
 	// Start server on port 8080
-	http.ListenAndServe(":8080", nil)
+	log.Printf("Server iniciado na porta: %s", port)
+
+	err := http.ListenAndServe(port, nil)
+	if err != nil {
+		log.Fatalf("Server falhou em iniciar: %v", err)
+	}
 }
