@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
 	"net/http"
 )
+
+const port = ":8080"
 
 func main() {
 
@@ -51,5 +54,10 @@ func main() {
 	})
 
 	// Start server on port 8080
-	http.ListenAndServe(":8080", nil)
+	log.Printf("Server started on port %s", port)
+
+	err := http.ListenAndServe(port, nil)
+	if err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
