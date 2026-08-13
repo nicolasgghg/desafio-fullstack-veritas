@@ -4,21 +4,23 @@ interface TaskItemProps {
   task: Task;
   onDelete: (id: number) => void;
   onEdit: (task: Task) => void;
+  onStatusChange: (id: number, status: Task["status"]) => void;
 }
 
-function TaskItem({ task, onDelete, onEdit }: TaskItemProps) {
+function TaskItem({ task, onDelete, onEdit, onStatusChange }: TaskItemProps) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-      <div>
-        <h2 className="font-semibold text-gray-900">{task.title}</h2>
+    <div className="flex min-w-0 items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="min-w-0 flex-1">
+        <h2 className="break-words font-semibold text-gray-900">
+          {task.title}
+        </h2>
 
-        <p className="mt-1 text-sm text-gray-600">{task.description}</p>
-
-        <span className="mt-2 inline-block text-sm text-gray-500">
-          {task.status}
-        </span>
+        <p className="mt-1 break-words text-sm text-gray-600">
+          {task.description}
+        </p>
       </div>
-      <div className="flex gap-2">
+
+      <div className="ml-4 flex shrink-0 gap-2">
         <button
           type="button"
           onClick={() => onEdit(task)}
@@ -34,6 +36,17 @@ function TaskItem({ task, onDelete, onEdit }: TaskItemProps) {
         >
           Delete
         </button>
+        <select
+          value={task.status}
+          onChange={(event) =>
+            onStatusChange(task.id, event.target.value as Task["status"])
+          }
+          className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+        >
+          <option value="todo">To Do</option>
+          <option value="in_progress">In Progress</option>
+          <option value="done">Done</option>
+        </select>
       </div>
     </div>
   );
